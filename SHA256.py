@@ -2,39 +2,6 @@ import bitarray
 import numpy as np
 from operator import add
 
-# Initialize hash values
-
-a = '6a09e667'
-b = 'bb67ae85'
-c = '3c6ef372'
-d = 'a54ff53a'
-e = '510e527f'
-f = '9b05688c'
-g = '1f83d9ab'
-h = '5be0cd19'
-
-initial_8 = [a, b, c, d, e, f, g, h]
-
-# Initialize array of constants
-sha_constants=[
-				'428a2f98','71374491','b5c0fbcf','e9b5dba5',
-				'3956c25b','59f111f1','923f82a4','ab1c5ed5',
-				'd807aa98','12835b01','243185be','550c7dc3',
-				'72be5d74','80deb1fe','9bdc06a7','c19bf174',
-				'e49b69c1','efbe4786','0fc19dc6','240ca1cc',
-				'2de92c6f','4a7484aa','5cb0a9dc','76f988da',
-				'983e5152','a831c66d','b00327c8','bf597fc7',
-				'c6e00bf3','d5a79147','06ca6351','14292967',
-				'27b70a85','2e1b2138','4d2c6dfc','53380d13',
-				'650a7354','766a0abb','81c2c92e','92722c85',
-				'a2bfe8a1','a81a664b','c24b8b70','c76c51a3',
-				'd192e819','d6990624','f40e3585','106aa070',
-				'19a4c116','1e376c08','2748774c','34b0bcb5',
-				'391c0cb3','4ed8aa4a','5b9cca4f','682e6ff3',
-				'748f82ee','78a5636f','84c87814','8cc70208',
-				'90befffa','a4506ceb','bef9a3f7','c67178f2'
-			  ]
-
 # Convert to bits
 
 def bin_32bit(dec):
@@ -253,59 +220,91 @@ Hash Computation
 
 """
 
-def sha256(Input_String, hex_cons, cons):
+class sha():
+	"""docstring for sha"""
+	def __init__(self):
+		pass
 
 
-	for i in range(0,len(hex_cons)):
-		hex_cons[i] = hex2dec(hex_cons[i])
-
-	for i in range(0,len(cons)):
-		cons[i] = hex2dec(cons[i])
-
-	big = big_chunks(padding(Input_String))
-
-	for i in big:
-		new_bits = decomp(chunks(i))
-
-		ihex = hex_cons[:]
-
-		for j in range(0,64):
-			T1 = mod_32_addition([ihex[7],sum1(ihex[4]),ch(ihex[4],ihex[5],ihex[6]),\
-							 	 cons[j],new_bits[j]])
-			T2 = mod_32_addition([sum0(ihex[0]),Maj(ihex[0],ihex[1],ihex[2])])
-			ihex[7] = ihex[6]
-			ihex[6] = ihex[5]
-			ihex[5] = ihex[4]
-			ihex[4] = mod_32_addition([ihex[3],T1])
-			ihex[3] = ihex[2]
-			ihex[2] = ihex[1]
-			ihex[1] = ihex[0]
-			ihex[0] = mod_32_addition([T1,T2])
-
-		for k in range(0,len(hex_cons)):
-			hex_cons[k] = mod_32_addition([hex_cons[k],ihex[k]])
+	def sha256(self, Input_String):
 
 
-	sha_output_list = []
-	for i in range(0,len(hex_cons)):
-		hex_int = int(''.join([str(bit) for bit in hex_cons[i]]),2)
-		hex_bin = format(hex_int,'x')
-		sha_output_list.append(hex_bin)
+		# Initialize hash values
+
+		a = '6a09e667'
+		b = 'bb67ae85'
+		c = '3c6ef372'
+		d = 'a54ff53a'
+		e = '510e527f'
+		f = '9b05688c'
+		g = '1f83d9ab'
+		h = '5be0cd19'
+
+		hex_cons = [a, b, c, d, e, f, g, h]
+
+		# Initialize array of constants
+		cons=[
+				'428a2f98','71374491','b5c0fbcf','e9b5dba5',
+				'3956c25b','59f111f1','923f82a4','ab1c5ed5',
+				'd807aa98','12835b01','243185be','550c7dc3',
+				'72be5d74','80deb1fe','9bdc06a7','c19bf174',
+				'e49b69c1','efbe4786','0fc19dc6','240ca1cc',
+				'2de92c6f','4a7484aa','5cb0a9dc','76f988da',
+				'983e5152','a831c66d','b00327c8','bf597fc7',
+				'c6e00bf3','d5a79147','06ca6351','14292967',
+				'27b70a85','2e1b2138','4d2c6dfc','53380d13',
+				'650a7354','766a0abb','81c2c92e','92722c85',
+				'a2bfe8a1','a81a664b','c24b8b70','c76c51a3',
+				'd192e819','d6990624','f40e3585','106aa070',
+				'19a4c116','1e376c08','2748774c','34b0bcb5',
+				'391c0cb3','4ed8aa4a','5b9cca4f','682e6ff3',
+				'748f82ee','78a5636f','84c87814','8cc70208',
+				'90befffa','a4506ceb','bef9a3f7','c67178f2'
+			  ]
+
+		for i in range(0,len(hex_cons)):
+			hex_cons[i] = hex2dec(hex_cons[i])
+
+		for i in range(0,len(cons)):
+			cons[i] = hex2dec(cons[i])
+
+		big = big_chunks(padding(Input_String))
+
+		for i in big:
+			new_bits = decomp(chunks(i))
+
+			ihex = hex_cons[:]
+
+			for j in range(0,64):
+				T1 = mod_32_addition([ihex[7],sum1(ihex[4]),ch(ihex[4],ihex[5],ihex[6]),\
+								 	 cons[j],new_bits[j]])
+				T2 = mod_32_addition([sum0(ihex[0]),Maj(ihex[0],ihex[1],ihex[2])])
+				ihex[7] = ihex[6]
+				ihex[6] = ihex[5]
+				ihex[5] = ihex[4]
+				ihex[4] = mod_32_addition([ihex[3],T1])
+				ihex[3] = ihex[2]
+				ihex[2] = ihex[1]
+				ihex[1] = ihex[0]
+				ihex[0] = mod_32_addition([T1,T2])
+
+			for k in range(0,len(hex_cons)):
+				hex_cons[k] = mod_32_addition([hex_cons[k],ihex[k]])
 
 
-	sha_output_string = ''.join([(i) for i in sha_output_list])
-	
-	return sha_output_string
+		sha_output_list = []
+		for i in range(0,len(hex_cons)):
+			hex_int = int(''.join([str(bit) for bit in hex_cons[i]]),2)
+			hex_bin = format(hex_int,'x')
+			sha_output_list.append(hex_bin)
 
 
-# ------------------------------------------------------------ #
-Test = '61 62 63'
-# ------------------------------------------------------------ #
+		sha_output_string = ''.join([(i) for i in sha_output_list])
+		
+		return sha_output_string
 
 
-test = sha256(Test, initial_8, sha_constants)
 
-print(test)
 
 
 
